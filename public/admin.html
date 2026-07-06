@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASM Molfetta - Pannello Amministratore</title>
+    <meta name="description" content="Pannello di controllo per la gestione delle segnalazioni ambientali di ASM Molfetta.">
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
+<div id="login-screen" class="login-screen">
+    <div class="login-card">
+        <div class="login-logo">
+            <svg viewBox="0 0 100 100" class="logo-svg-admin">
+                <path d="M50 15 C75 15, 85 45, 50 85 C15 45, 25 15, 50 15 Z" fill="url(#admin-logo-grad)" />
+                <path d="M50 35 C65 35, 70 55, 50 80 C30 55, 35 35, 50 35 Z" fill="#ffffff" opacity="0.3" />
+                <defs>
+                    <linearGradient id="admin-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#10b981" />
+                        <stop offset="100%" stop-color="#059669" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+        <h1>ASM Molfetta</h1>
+        <p class="login-subtitle">Pannello Amministratore</p>
+
+        <form id="login-form" class="login-form" novalidate>
+            <div class="form-field">
+                <label for="admin-username">
+                    <i data-lucide="user"></i>
+                    Username
+                </label>
+                <input type="text" id="admin-username" name="username" placeholder="admin" autocomplete="username" required>
+            </div>
+            <div class="form-field">
+                <label for="admin-password">
+                    <i data-lucide="lock"></i>
+                    Password
+                </label>
+                <div class="password-wrapper">
+                    <input type="password" id="admin-password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+                    <button type="button" class="toggle-pw" id="toggle-pw" title="Mostra/Nascondi password">
+                        <i data-lucide="eye" id="pw-eye-icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="login-error" class="login-error" style="display:none;"></div>
+            <button type="submit" class="btn-login" id="btn-login">
+                <i data-lucide="log-in"></i>
+                Accedi
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================================
+     ADMIN DASHBOARD
+     ============================================================ -->
+<div id="admin-app" class="admin-app" style="display:none;">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <svg viewBox="0 0 100 100" class="logo-svg-admin small">
+                <path d="M50 15 C75 15, 85 45, 50 85 C15 45, 25 15, 50 15 Z" fill="url(#sidebar-logo-grad)" />
+                <defs>
+                    <linearGradient id="sidebar-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#10b981" />
+                        <stop offset="100%" stop-color="#059669" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <div>
+                <h2>ASM Molfetta</h2>
+                <span>Admin Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="sidebar-btn active" data-view="dashboard" id="nav-dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="sidebar-btn" data-view="reports" id="nav-reports">
+                <i data-lucide="flag"></i>
+                <span>Segnalazioni</span>
+                <span class="nav-badge" id="badge-nuove">0</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-user-info">
+                <i data-lucide="shield-check"></i>
+                <span id="admin-username-display">Admin</span>
+            </div>
+            <button class="btn-logout" id="btn-logout">
+                <i data-lucide="log-out"></i>
+                Esci
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+
+        <!-- ---- DASHBOARD VIEW ---- -->
+        <section id="view-dashboard" class="admin-view active">
+            <div class="view-header">
+                <h1>Dashboard</h1>
+                <span class="view-subtitle">Panoramica attività segnalazioni</span>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-tile total">
+                    <div class="stat-icon"><i data-lucide="bar-chart-2"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="stat-total">—</span>
+                        <span class="stat-label">Totale Segnalazioni</span>
+                    </div>
+                </div>
+                <div class="stat-tile nuova">
+                    <div class="stat-icon"><i data-lucide="inbox"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="stat-nuove">—</span>
+                        <span class="stat-label">Nuove (da gestire)</span>
+                    </div>
+                </div>
+                <div class="stat-tile in-lavorazione">
+                    <div class="stat-icon"><i data-lucide="settings-2"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="stat-lavorazione">—</span>
+                        <span class="stat-label">In Lavorazione</span>
+                    </div>
+                </div>
+                <div class="stat-tile risolta">
+                    <div class="stat-icon"><i data-lucide="check-circle"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="stat-risolte">—</span>
+                        <span class="stat-label">Risolte</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Reports -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i data-lucide="clock"></i> Ultime Segnalazioni</h3>
+                    <button class="btn-text" id="btn-view-all">Vedi tutte →</button>
+                </div>
+                <div id="recent-list" class="recent-list">
+                    <div class="loading-placeholder">Caricamento...</div>
+                </div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3><i data-lucide="pie-chart"></i> Distribuzione per Categoria</h3>
+                </div>
+                <div id="category-breakdown" class="category-breakdown">
+                    <div class="loading-placeholder">Caricamento...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ---- REPORTS VIEW ---- -->
+        <section id="view-reports" class="admin-view" style="display:none;">
+            <div class="view-header">
+                <h1>Segnalazioni</h1>
+                <span class="view-subtitle" id="reports-count-label">Caricamento...</span>
+            </div>
+
+            <!-- Filters Bar -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label>Stato</label>
+                    <select id="filter-status" class="filter-select">
+                        <option value="">Tutti</option>
+                        <option value="Nuova">Nuova</option>
+                        <option value="In Lavorazione">In Lavorazione</option>
+                        <option value="Risolta">Risolta</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Categoria</label>
+                    <select id="filter-category" class="filter-select">
+                        <option value="">Tutte</option>
+                        <option value="ingombranti">Ingombranti</option>
+                        <option value="abbandono">Rifiuti Abbandonati</option>
+                        <option value="cestino">Cassonetto Pieno</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                </div>
+                <button class="btn-filter" id="btn-apply-filters">
+                    <i data-lucide="filter"></i>
+                    Filtra
+                </button>
+                <button class="btn-filter ghost" id="btn-reset-filters">
+                    <i data-lucide="x"></i>
+                    Reset
+                </button>
+            </div>
+
+            <!-- Reports Table -->
+            <div class="admin-card no-pad">
+                <div id="reports-table-container">
+                    <div class="loading-placeholder padded">Caricamento segnalazioni...</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ============================================================
+     REPORT DETAIL MODAL
+     ============================================================ -->
+<div id="report-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="modal-report-title">Segnalazione</h2>
+            <button class="modal-close" id="modal-close">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="modal-body">
+            <!-- Filled dynamically -->
+        </div>
+        <div class="modal-footer">
+            <div class="status-change-group">
+                <label>Aggiorna stato:</label>
+                <select id="modal-status-select" class="filter-select">
+                    <option value="Nuova">Nuova</option>
+                    <option value="In Lavorazione">In Lavorazione</option>
+                    <option value="Risolta">Risolta</option>
+                </select>
+                <button class="btn-update" id="btn-update-status">
+                    <i data-lucide="save"></i>
+                    Salva
+                </button>
+            </div>
+            <button class="btn-delete" id="btn-delete-report">
+                <i data-lucide="trash-2"></i>
+                Elimina
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="admin-toast-container" class="admin-toast-container"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

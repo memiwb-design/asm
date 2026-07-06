@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ASM Molfetta - Servizi Ambientali</title>
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- App Shell Wrapper (centers it on desktop, fullscreen on mobile) -->
+    <div class="phone-frame">
+        <div class="app-container">
+            
+            <!-- App Header -->
+            <header class="app-header">
+                <div class="header-logo">
+                    <div class="logo-circle">
+                        <svg viewBox="0 0 100 100" class="logo-svg">
+                            <!-- Premium environmental leaf/ocean wave abstract logo -->
+                            <path d="M50 15 C75 15, 85 45, 50 85 C15 45, 25 15, 50 15 Z" fill="url(#logo-grad)" />
+                            <path d="M50 35 C65 35, 70 55, 50 80 C30 55, 35 35, 50 35 Z" fill="#ffffff" opacity="0.3" />
+                            <defs>
+                                <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10b981" />
+                                    <stop offset="100%" stop-color="#059669" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="header-titles">
+                        <h1>ASM Molfetta</h1>
+                        <span class="sub-title">Servizi Territoriali</span>
+                    </div>
+                </div>
+                <div class="connection-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Online</span>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content Area -->
+            <main class="app-content">
+                
+                <!-- SCREEN 1: HOME (Filo Conduttore) -->
+                <section id="screen-home" class="app-screen active">
+                    <div class="welcome-card">
+                        <h2>Ciao, Molfetta! 👋</h2>
+                        <p>Gestisci i rifiuti e le segnalazioni ambientali in tempo reale. Siamo qui per te.</p>
+                        <div class="hero-actions">
+                            <a href="tel:+390803355111" class="hero-btn call-btn">
+                                <i data-lucide="phone-call"></i>
+                                <span>Chiama ASM</span>
+                            </a>
+                            <button class="hero-btn emergency-btn" onclick="showNotificationInfo()">
+                                <i data-lucide="bell"></i>
+                                <span>Servizi Oggi</span>
+                            </button>
+                    </div>
+
+                    <!-- PWA Native/Smart Install Banner (shown programmatically) -->
+                    <div class="install-banner" id="pwa-install-banner" style="display: none;">
+                        <div class="install-icon">
+                            <i data-lucide="smartphone"></i>
+                        </div>
+                        <div class="install-text">
+                            <h4>Usa come Mini-App</h4>
+                            <p>Installa l'app sulla home per avviarla a schermo intero!</p>
+                        </div>
+                        <button type="button" class="install-action-btn" id="pwa-install-btn">Installa</button>
+                    </div>
+
+                    <!-- Live Feed / News Banner -->
+                    <div class="info-alert-banner">
+                        <div class="alert-icon">
+                            <i data-lucide="info"></i>
+                        </div>
+                        <div class="alert-content">
+                            <strong>Avviso Ritiro:</strong> Oggi la raccolta è regolare a partire dalle ore 21:00. Controlla il calendario!
+                        </div>
+                    </div>
+
+                    <!-- Direct Line Section: Chatbot Molfy -->
+                    <div class="section-title">
+                        <h3>Filo Conduttore con ASM</h3>
+                        <span class="badge-live">Live Chat</span>
+                    </div>
+                    
+                    <div class="chat-card">
+                        <div class="chat-header">
+                            <div class="chat-avatar">
+                                <i data-lucide="bot"></i>
+                            </div>
+                            <div class="chat-info">
+                                <h4>Molfy</h4>
+                                <span>Assistente Virtuale ASM</span>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message system">
+                                <p>Ciao! Sono Molfy, l'assistente virtuale di ASM Molfetta. Chiedimi dove buttare un oggetto o quando avviene la raccolta!</p>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" placeholder="Scrivi una domanda... (es: Vetro, Polistirolo)" autocomplete="off">
+                            <button id="chat-send-btn">
+                                <i data-lucide="send"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick stats / Info -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <span class="stat-val">98%</span>
+                            <span class="stat-lbl">Raccolta efficiente</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-val">24h</span>
+                            <span class="stat-lbl">Ritiro ingombranti</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SCREEN 2: SEGNALA (Camera & Geolocated Reports) -->
+                <section id="screen-segnala" class="app-screen">
+                    <div class="screen-intro">
+                        <h2>Segnala un Disservizio</h2>
+                        <p>Scatta una foto geolocalizzata per richiedere la rimozione di rifiuti ingombranti o segnalare disservizi.</p>
+                    </div>
+
+                    <!-- Camera / Upload Widget -->
+                    <div class="camera-widget">
+                        <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;" multiple>
+                        <button class="camera-trigger" id="camera-btn">
+                            <div class="camera-icon-wrapper">
+                                <i data-lucide="camera"></i>
+                            </div>
+                            <span>Scatta o Carica Foto</span>
+                            <span class="camera-subtext">Le coordinate GPS verranno allegate automaticamente</span>
+                        </button>
+                        
+                        <!-- Image Preview Grid -->
+                        <div class="preview-grid" id="preview-grid" style="display: none;">
+                            <!-- Thumbnails added dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Geolocalisation Section -->
+                    <div class="geo-panel">
+                        <div class="panel-header">
+                            <i data-lucide="map-pin"></i>
+                            <h3>Geolocalizzazione GPS</h3>
+                            <button class="geo-refresh-btn" id="geo-refresh" title="Aggiorna Posizione">
+                                <i data-lucide="refresh-cw"></i>
+                            </button>
+                        </div>
+                        <div class="geo-body">
+                            <div class="geo-status-indicator" id="geo-status">
+                                <div class="radar-ping"></div>
+                                <span id="geo-status-text">Ricerca segnale GPS in corso...</span>
+                            </div>
+                            <div class="geo-details" id="geo-details" style="display: none;">
+                                <div class="geo-coords">
+                                    <div><strong>Lat:</strong> <span id="lat-val">--</span></div>
+                                    <div><strong>Lng:</strong> <span id="lng-val">--</span></div>
+                                </div>
+                                <div class="geo-address">
+                                    <i data-lucide="navigation"></i>
+                                    <span id="geo-address-text">Molfetta (BA), Italia</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Report Details Form -->
+                    <div class="report-form">
+                        <div class="form-group">
+                            <label>Tipo di Intervento</label>
+                            <div class="chip-container">
+                                <button type="button" class="form-chip active" data-type="ingombranti">Ingombranti</button>
+                                <button type="button" class="form-chip" data-type="abbandono">Rifiuti Abbandonati</button>
+                                <button type="button" class="form-chip" data-type="cestino">Cestino Pieno</button>
+                                <button type="button" class="form-chip" data-type="altro">Altro</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="report-notes">Note / Dettagli Aggiuntivi</label>
+                            <textarea id="report-notes" rows="3" placeholder="Fornisci dettagli (es: Divano abbandonato vicino al marciapiede, civico...)"></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="submit-actions">
+                            <!-- Method 1: Mock Server Send with animations -->
+                            <button type="button" class="btn btn-primary" id="btn-submit-report">
+                                <i data-lucide="send-horizontal"></i>
+                                <span>Invia all'ASM</span>
+                            </button>
+
+                            <!-- Method 2: Real Prefilled Email client trigger -->
+                            <button type="button" class="btn btn-secondary" id="btn-mailto-report">
+                                <i data-lucide="mail"></i>
+                                <span>Genera E-mail (memiwb@gmail.com)</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SCREEN 3: CALENDARIO (Waste Timetable) -->
+                <section id="screen-calendar" class="app-screen">
+                    <div class="screen-intro">
+                        <h2>Calendario di Raccolta</h2>
+                        <p>Consulta i giorni e gli orari di conferimento dei rifiuti porta a porta a Molfetta.</p>
+                    </div>
+
+                    <!-- Toggle Utenze (Domestiche / Non Domestiche) -->
+                    <div class="calendar-toggle-container">
+                        <button type="button" class="calendar-toggle-btn active" data-type="domestiche">
+                            <i data-lucide="home"></i>
+                            <span>Utenze Domestiche</span>
+                        </button>
+                        <button type="button" class="calendar-toggle-btn" data-type="non-domestiche">
+                            <i data-lucide="briefcase"></i>
+                            <span>Utenze Non Domestiche</span>
+                        </button>
+                    </div>
+
+                    <!-- Dynamic 'Next Up' Highlight Card -->
+                    <div class="next-collection-card" id="next-collection-card">
+                        <div class="next-tag">Prossimo Ritiro</div>
+                        <div class="next-main">
+                            <div class="next-icon-box" id="next-icon">
+                                <i data-lucide="trash-2"></i>
+                            </div>
+                            <div class="next-info">
+                                <h3 id="next-day-name">Caricamento...</h3>
+                                <p id="next-waste-type">--</p>
+                                <span class="next-time" id="next-time-range"><i data-lucide="clock"></i> --</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Weekly Timetable -->
+                    <div class="section-title">
+                        <h3>Programma Settimanale</h3>
+                    </div>
+
+                    <div class="calendar-timeline">
+                        <!-- DOMENICA -->
+                        <div class="calendar-card" data-day="0">
+                            <div class="cal-day-label">
+                                <span class="day-short">DOM</span>
+                                <span class="day-full">Domenica</span>
+                            </div>
+                            <div class="cal-details organic-theme">
+                                <div class="cal-icon"><i data-lucide="apple"></i></div>
+                                <div class="cal-content">
+                                    <h4>Organico</h4>
+                                    <span class="cal-time"><i data-lucide="clock"></i> Dalle 21:00 alle 24:00</span>
+                                </div>
+                                <div class="cal-status">Stasera</div>
+                            </div>
+                        </div>
+
+                        <!-- LUNEDI -->
+                        <div class="calendar-card" data-day="1">
+                            <div class="cal-day-label">
+                                <span class="day-short">LUN</span>
+                                <span class="day-full">Lunedì</span>
+                            </div>
+                            <div class="cal-details residual-theme">
+                                <div class="cal-icon"><i data-lucide="trash-2"></i></div>
+                                <div class="cal-content">
+                                    <h4>Indifferenziato</h4>
+                                    <span class="cal-time"><i data-lucide="clock"></i> Dalle 21:00 alle 24:00</span>
+                                </div>
+                                <div class="cal-status">Domani</div>
+                            </div>
+                        </div>
+
+                        <!-- MARTEDI -->
+                        <div class="calendar-card" data-day="2">
+                            <div class="cal-day-label">
+                                <span class="day-short">MAR</span>
+                                <span class="day-full">Martedì</span>
+                            </div>
+                            <div class="cal-details mix-theme">
+                                <div class="cal-icon"><i data-lucide="layers"></i></div>
+                                <div class="cal-content">
+                                    <h4>Organico e Vetro</h4>
+                                    <span class="cal-time"><i data-lucide="clock"></i> Sera (dalle 21:00)</span>
+                                </div>
+                                <div class="cal-status"></div>
+                            </div>
+                        </div>
+
+                        <!-- MERCOLEDI -->
+                        <div class="calendar-card" data-day="3">
+                            <div class="cal-day-label">
+                                <span class="day-short">MER</span>
+                                <span class="day-full">Mercoledì</span>
+                            </div>
+                            <div class="cal-details paper-theme">
+                                <div class="cal-icon"><i data-lucide="package"></i></div>
+                                <div class="cal-content">
+                                    <h4>Carta e cartone</h4>
+                                    <span class="cal-time"><i data-lucide="clock"></i> Sera (dalle 21:00)</span>
+                                </div>
+                                <div class="cal-status"></div>
+                            </div>
+                        </div>
+
+                        <!-- GIOVEDI -->
+                        <div class="calendar-card" data-day="4">
+                            <div class="cal-day-label">
+                                <span class="day-short">GIO</span>
+                                <span class="day-full">Giovedì</span>
+                            </div>
+                            <div class="cal-details organic-theme">
+                                <div class="cal-icon"><i data-lucide="apple"></i></div>
+                                <div class="cal-content">
+                                    <h4>Organico</h4>
+                                    <span class="cal-time"><i data-lucide="clock"></i> Sera (dalle 21:00)</span>
+                                </div>
+                                <div class="cal-status"></div>
+                            </div>
+                        </div>
+
+                        <!-- VENERDI -->
+                        <div class="calendar-card" data-day="5">
+                            <div class="cal-day-label">
+                                <span class="day-short">VEN</span>
+                                <span class="day-full">Venerdì</span>
+                            </div>
+                            <div class="cal-details glass-theme">
+                                <div class="cal-icon"><i data-lucide="glass-water"></i></div>
+                                <div class="cal-content">
+                                    <h4>Vetro</h4>
+                                    <span class="cal-time"><i data-lucide="clock"></i> Sera (dalle 21:00)</span>
+                                </div>
+                                <div class="cal-status"></div>
+                            </div>
+                        </div>
+
+                        <!-- SABATO -->
+                        <div class="calendar-card rest-day" data-day="6">
+                            <div class="cal-day-label">
+                                <span class="day-short">SAB</span>
+                                <span class="day-full">Sabato</span>
+                            </div>
+                            <div class="cal-details rest-theme">
+                                <div class="cal-icon"><i data-lucide="sparkles"></i></div>
+                                <div class="cal-content">
+                                    <h4>Nessuna Raccolta</h4>
+                                    <span class="cal-time">Sabato riposo conferimenti</span>
+                                </div>
+                                <div class="cal-status"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Bottom Navigation Bar -->
+            <nav class="app-nav">
+                <button class="nav-item active" data-target="screen-home">
+                    <i data-lucide="home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-item" data-target="screen-segnala">
+                    <i data-lucide="camera"></i>
+                    <span>Segnala</span>
+                </button>
+                <button class="nav-item" data-target="screen-calendar">
+                    <i data-lucide="calendar"></i>
+                    <span>Calendario</span>
+                </button>
+            </nav>
+
+            <!-- iOS Safari PWA Installation Help Tooltip (Hidden by default) -->
+            <div class="ios-install-tooltip" id="ios-install-tooltip" style="display: none;">
+                <div class="tooltip-header">
+                    <h4>Installa Mini-App su iPhone</h4>
+                    <button class="tooltip-close" id="ios-tooltip-close">&times;</button>
+                </div>
+                <div class="tooltip-body">
+                    Per installare questa mini-app sul tuo smartphone iOS:
+                    <ol>
+                        <li>Premi il pulsante di condivisione <i data-lucide="share" style="width: 14px; height: 14px; color: var(--primary);"></i> in basso in Safari.</li>
+                        <li>Seleziona <strong>"Aggiungi alla schermata Home"</strong> <i data-lucide="plus-square" style="width: 14px; height: 14px; color: var(--primary);"></i>.</li>
+                        <li>Tocca "Aggiungi" per confermare!</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modals and Overlays (Success Message / Notifications) -->
+    <div class="overlay-modal" id="modal-success" style="display: none;">
+        <div class="modal-card">
+            <div class="success-icon-wrapper">
+                <svg viewBox="0 0 100 100" class="checkmark-svg">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#22c55e" stroke-width="6" class="circle-draw"/>
+                    <path d="M30 52 L45 67 L70 35" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" class="check-draw"/>
+                </svg>
+            </div>
+            <h2>Segnalazione Inviata!</h2>
+            <p>Grazie per la tua segnalazione. Il team ASM Molfetta prenderà in carico la richiesta per la rimozione o l'intervento.</p>
+            <div class="modal-summary">
+                <div class="summary-item"><strong>Destinatario:</strong> memiwb@gmail.com</div>
+                <div class="summary-item"><strong>Tipo:</strong> <span id="summary-type">Ingombranti</span></div>
+                <div class="summary-item"><strong>Posizione GPS:</strong> <span id="summary-gps">Rilevata</span></div>
+                <div class="summary-item"><strong>Foto allegate:</strong> <span id="summary-photos">0</span></div>
+            </div>
+            <button class="btn btn-primary" onclick="closeSuccessModal()">Ottimo</button>
+        </div>
+    </div>
+
+    <!-- General Toast Notification -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
