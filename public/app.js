@@ -387,6 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = origHTML;
+        }
     });
 
     // Real mailto redirect
